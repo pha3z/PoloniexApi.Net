@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Jojatekok.PoloniexAPI</RootNamespace>
     <AssemblyName>PoloniexApi.Net</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -119,6 +120,9 @@
     <Compile Include="General\EventArgs\TickerChangedEventArgs.cs" />
     <Compile Include="General\EventArgs\TrollboxMessageEventArgs.cs" />
     <Compile Include="General\ObservableDictionary.cs" />
+    <Compile Include="IPoloniexClient.cs" />
+    <Compile Include="PoloniexClientFactory.cs" />
+    <Compile Include="IPoloniexClientFactory.cs" />
     <Compile Include="LiveTools\Live.cs" />
     <Compile Include="LiveTools\Live.Interface.cs" />
     <Compile Include="MarketTools\OrderBook.Interface.cs" />

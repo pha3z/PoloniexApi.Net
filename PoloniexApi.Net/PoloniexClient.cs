@@ -6,6 +6,7 @@ using Jojatekok.PoloniexAPI.WalletTools;
 namespace Jojatekok.PoloniexAPI
 {
     public sealed class PoloniexClient
+        : IPoloniexClient
     {
         /// <summary>Represents the authenticator object of the client.</summary>
         public IAuthenticator Authenticator { get; private set; }
