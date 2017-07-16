@@ -1,8 +1,10 @@
 ﻿using Jojatekok.PoloniexAPI.MarketTools;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Web;
+using Jojatekok.PoloniexAPI.Exceptions;
 using WampSharp.V2;
 using WampSharp.V2.Realm;
 
@@ -82,16 +84,44 @@ namespace Jojatekok.PoloniexAPI.LiveTools
         public async Task SubscribeToTickerAsync()
         {
             if (!ActiveSubscriptions.ContainsKey(SubjectNameTicker)) {
-                await WampChannelOpenTask;
-                ActiveSubscriptions.Add(SubjectNameTicker, WampChannel.RealmProxy.Services.GetSubject(SubjectNameTicker).Subscribe(x => ProcessMessageTicker(x.Arguments)));
+                try
+                {
+                    await WampChannelOpenTask;
+                    ActiveSubscriptions.Add(SubjectNameTicker,
+                        WampChannel.RealmProxy.Services.GetSubject(SubjectNameTicker)
+                            .Subscribe(x => ProcessMessageTicker(x.Arguments)));
+                }
+                catch (Exception ex)
+                {
+                    var clientError = ClientChannelHttpException.CreateFrom(ex);
+                    if (clientError != null)
+                    {
+                        throw clientError;
+                    }
+                    throw;
+                }
             }
         }
 
         public async Task SubscribeToTrollboxAsync()
         {
             if (!ActiveSubscriptions.ContainsKey(SubjectNameTrollbox)) {
-                await WampChannelOpenTask;
-                ActiveSubscriptions.Add(SubjectNameTrollbox, WampChannel.RealmProxy.Services.GetSubject(SubjectNameTrollbox).Subscribe(x => ProcessMessageTrollbox(x.Arguments)));
+                try
+                {
+                    await WampChannelOpenTask;
+                    ActiveSubscriptions.Add(SubjectNameTrollbox,
+                        WampChannel.RealmProxy.Services.GetSubject(SubjectNameTrollbox)
+                            .Subscribe(x => ProcessMessageTrollbox(x.Arguments)));
+                }
+                catch (Exception ex)
+                {
+                    var clientError = ClientChannelHttpException.CreateFrom(ex);
+                    if (clientError != null)
+                    {
+                        throw clientError;
+                    }
+                    throw;
+                }
             }
         }
 
