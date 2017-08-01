@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <!-- Required elements-->
+        <id>PoloniexApi.Net.OBApps</id>
+        <version>1.2.1-beta</version>
+        <description>OBApps fork of poloniex api, adding dependency injection helpers</description>
+        <authors>Jojatekok, OBApps</authors>
+
+        <!-- Optional elements -->
+        <!-- ... -->
+    </metadata>
+    <!-- Optional 'files' node -->
+</package>
