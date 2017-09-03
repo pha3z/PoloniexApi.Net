@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\ClientChannelHttpException.cs" />
+    <Compile Include="Exceptions\TradeOperationFailureException.cs" />
     <Compile Include="General\CurrencyPair.cs" />
     <Compile Include="General\EventArgs\TickerChangedEventArgs.cs" />
     <Compile Include="General\EventArgs\TrollboxMessageEventArgs.cs" />
@@ -145,10 +146,15 @@
     <Compile Include="MarketTools\Order.Interface.cs" />
     <Compile Include="MarketTools\Trade.cs" />
     <Compile Include="MarketTools\Trade.Interface.cs" />
+    <Compile Include="TradingTools\MarginAccountSummary.Interface.cs" />
+    <Compile Include="TradingTools\MarginAccountSummary.cs" />
     <Compile Include="TradingTools\Order.cs" />
     <Compile Include="TradingTools\Order.Interface.cs" />
+    <Compile Include="TradingTools\Position.cs" />
+    <Compile Include="TradingTools\Position.Interface.cs" />
     <Compile Include="TradingTools\Trade.cs" />
     <Compile Include="TradingTools\Trade.Interface.cs" />
+    <Compile Include="TradingTools\TradeFlags.cs" />
     <Compile Include="TradingTools\Trading.cs" />
     <Compile Include="TradingTools\Trading.Interface.cs" />
     <Compile Include="WalletTools\Balance.cs" />
