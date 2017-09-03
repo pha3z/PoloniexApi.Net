@@ -33,5 +33,11 @@ namespace PoloniexApi.Net.Tests.Integration
             var actual = CreateTarget().GetMarginAccountSummaryAsync().Result;
             TestContext.WriteLine("{0}", JsonConvert.SerializeObject(actual));
         }
+        [TestMethod]
+        public void GetTradeableBalances_ReturnsValues()
+        {
+            var actual = CreateTarget().GetTradeableBalancesAsync().Result;
+            TestContext.WriteLine("{0}", JsonConvert.SerializeObject(actual));
+        }
     }
 }

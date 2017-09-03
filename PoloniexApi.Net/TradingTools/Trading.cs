@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Jojatekok.PoloniexAPI.Exceptions;
+using Jojatekok.PoloniexAPI.MarketTools;
 
 namespace Jojatekok.PoloniexAPI.TradingTools
 {
@@ -47,9 +48,7 @@ namespace Jojatekok.PoloniexAPI.TradingTools
                 { "amount", amountQuote.ToStringNormalized() }
             };
 
-            var data = PostData<JObject>(type.ToStringNormalized(), postData);
-
-            return ThrowForFailure(data).Value<string>("orderNumber");
+            return PostData<string>(type.ToStringNormalized(), postData, "orderNumber");
         }
 
         private string PostMarginOrder(CurrencyPair currencyPair, OrderType type, double pricePerCoin, double amountQuote, double lendingRate)
@@ -61,9 +60,8 @@ namespace Jojatekok.PoloniexAPI.TradingTools
                 { "lendingRate", lendingRate.ToStringNormalized() }
             };
 
-            var data = PostData<JObject>(type.ToStringNormalized(), postData);
+            return PostData<string>(type.ToStringNormalized(), postData, "orderNumber");
 
-            return ThrowForFailure(data).Value<string>("orderNumber");
         }
 
         private bool DeleteOrder(CurrencyPair currencyPair, ulong orderId)
@@ -73,8 +71,7 @@ namespace Jojatekok.PoloniexAPI.TradingTools
                 { "orderNumber", orderId }
             };
 
-            var data = PostData<JObject>("cancelOrder", postData);
-            return ThrowForFailure(data).Value<byte>("success") == 1;
+            return PostData<byte>("cancelOrder", postData, "success", false) == 1;
         }
 
 
@@ -110,15 +107,14 @@ namespace Jojatekok.PoloniexAPI.TradingTools
                 { "currencyPair", currencyPair }
             };
 
-            var data = PostData<JObject>("closeMarginPosition", postData);
+            var trades = PostData<Dictionary<string, IList<Trade>>>("closeMarginPosition", postData, "resultingTrades");
 
-            var trades = ThrowForFailure(data).Value<Dictionary<string, IList<Trade>>>("resultingTrades");
             return trades != null && trades.Any()
                 ? trades.SelectMany(x => x.Value).ToList<ITrade>()
                 : new List<ITrade>();
         }
 
-        string MoveOrder(ulong orderId, double newRate, double? amount = null, TradeFlags flags = TradeFlags.None)
+        private string MoveOrder(ulong orderId, double newRate, double? amount = null, TradeFlags flags = TradeFlags.None)
         {
             var postData = new Dictionary<string, object> {
                 { "orderNumber", orderId },
@@ -127,11 +123,21 @@ namespace Jojatekok.PoloniexAPI.TradingTools
             if(amount.HasValue) {  postData["amount"] = amount.Value; }
             postData = AddTradeFlags(postData, flags);
 
-            var data = PostData<JObject>("moveOrder", postData);
-            
-            return ThrowForFailure(data).Value<string>("orderNumber");
+            return PostData<string>("moveOrder", postData, "orderNumber");
         }
 
+        private IDictionary<CurrencyPair, ITradeableBalance> GetTradeableBalances()
+        {
+            var postData = new Dictionary<string, object> {
+
+            };
+
+            var data = PostData<Dictionary<string, Dictionary<string, double>>>("returnTradableBalances", postData);
+
+            return data.ToDictionary(x => CurrencyPair.Parse(x.Key), x => x.Value)
+                .ToDictionary(x => x.Key, x => (ITradeableBalance) new TradeableBalance(x.Key, x.Value));
+        
+        }
 
         Dictionary<string, object> AddTradeFlags(Dictionary<string, object> target, TradeFlags flags)
         {
@@ -151,6 +157,11 @@ namespace Jojatekok.PoloniexAPI.TradingTools
         public Task<IList<ITrade>> CloseMarginPositionAsync(CurrencyPair currencyPair)
         {
             return Task.Factory.StartNew(() => CloseMarginPosition(currencyPair));
+        }
+
+        public Task<IDictionary<CurrencyPair, ITradeableBalance>> GetTradeableBalancesAsync()
+        {
+            return Task.Factory.StartNew(GetTradeableBalances);
         }
 
         public Task<IDictionary<CurrencyPair, IPosition>> GetAllMarginPositionsAsync()
@@ -206,16 +217,35 @@ namespace Jojatekok.PoloniexAPI.TradingTools
         private JObject ThrowForFailure(JObject data, bool checkSuccess = true)
         {
             if (data.Value<string>("error") != null) { throw new TradeOperationFailureException(data); }
-            if (checkSuccess && data.Value<byte>("success") != 1) { throw new TradeOperationFailureException(data); }
+            if (checkSuccess)
+            {
+                JToken success;
+                if (data.TryGetValue("success", out success))
+                {
+                    if (success.Value<byte>() != 1)
+                    {
+                        throw new TradeOperationFailureException(data);
+                    }
+                }
+            }
             return data;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private T PostData<T>(string command, Dictionary<string, object> postData)
+        private T PostData<T>(string command, Dictionary<string, object> postData, string fieldName = default(string), bool checkSuccess = true)
         {
-            return ApiWebClient.PostData<T>(command, postData);
+            var ret = PostData(command, postData, checkSuccess);
+            return fieldName == null
+                ? ret.ToObject<T>()
+                : ret.Value<T>(fieldName);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private JObject PostData(string command, Dictionary<string, object> postData, bool checkSuccess = true)
+        {
+            var ret = ApiWebClient.PostData<JObject>(command, postData);
+            return ThrowForFailure(ret, checkSuccess);
         }
 
-     
+
     }
 }

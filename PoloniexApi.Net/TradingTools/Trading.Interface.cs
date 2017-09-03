@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Jojatekok.PoloniexAPI.MarketTools;
+using IOrder = Jojatekok.PoloniexAPI.TradingTools.IOrder;
+using ITrade = Jojatekok.PoloniexAPI.TradingTools.ITrade;
 
 namespace Jojatekok.PoloniexAPI
 {
@@ -34,6 +37,9 @@ namespace Jojatekok.PoloniexAPI
         /// <returns>A <see cref="IPosition"/> instance that describes the active position, if any.</returns>
         Task<IList<ITrade>> CloseMarginPositionAsync(CurrencyPair currencyPair);
 
+        /// <summary>Fetches current tradeable balances.</summary>
+        /// <returns>A <see cref="IPosition"/> instance that describes the active position, if any.</returns>
+        Task<IDictionary<CurrencyPair, ITradeableBalance>> GetTradeableBalancesAsync();
 
         /// <summary>Fetches information about your current margin position.</summary>
         /// <returns>A <see cref="IPosition"/> instance that describes the active position, if any.</returns>

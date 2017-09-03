@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Jojatekok.PoloniexAPI.Exceptions
@@ -29,7 +30,7 @@ namespace Jojatekok.PoloniexAPI.Exceptions
 
         public TradeOperationFailureException(JObject response) : base(response.Value<string>("error") ?? response.Value<string>("message"))
         {
-            Data["response"] = response;
+            Data["response"] = response.ToString(Formatting.None);
         }
 
         protected TradeOperationFailureException(
@@ -38,6 +39,6 @@ namespace Jojatekok.PoloniexAPI.Exceptions
         {
         }
 
-        public JObject Response => Data["Response"] as JObject;
+        public string Response => Data["Response"] as string;
     }
 }
