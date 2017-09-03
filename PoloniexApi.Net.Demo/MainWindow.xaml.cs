@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 
 namespace Jojatekok.PoloniexAPI.Demo
 {
@@ -14,9 +15,16 @@ namespace Jojatekok.PoloniexAPI.Demo
             InitializeComponent();
 
             PoloniexClient = new PoloniexClient(ApiKeys.PublicKey, ApiKeys.PrivateKey);
+            LoadTickers();           
             LoadMarketSummaryAsync();
         }
-
+        private async void LoadTickers()
+        {
+            PoloniexClient.Live.Start();
+            PoloniexClient.Live.OnTickerChanged += (s, e) => Debug.WriteLine("TickerTicked");
+            await PoloniexClient.Live.SubscribeToTickerAsync();
+            Debug.WriteLine("Ticker subscribed");
+        }
         private async void LoadMarketSummaryAsync()
         {
             var markets = await PoloniexClient.Markets.GetSummaryAsync();
