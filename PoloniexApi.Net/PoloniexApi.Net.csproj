@@ -122,8 +122,8 @@
     <Compile Include="General\EventArgs\TrollboxMessageEventArgs.cs" />
     <Compile Include="General\ObservableDictionary.cs" />
     <Compile Include="IPoloniexClient.cs" />
-    <Compile Include="MarketTools\TradeableBalance.Interface.cs" />
-    <Compile Include="MarketTools\TradeableBalance.cs" />
+    <Compile Include="TradingTools\TradeableBalance.Interface.cs" />
+    <Compile Include="TradingTools\TradeableBalance.cs" />
     <Compile Include="PoloniexClientFactory.cs" />
     <Compile Include="IPoloniexClientFactory.cs" />
     <Compile Include="LiveTools\Live.cs" />

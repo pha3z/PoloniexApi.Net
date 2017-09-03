@@ -1,5 +1,5 @@
 ﻿
-namespace Jojatekok.PoloniexAPI.MarketTools
+namespace Jojatekok.PoloniexAPI.TradingTools
 {
     /// <summary>
     /// The <see cref="ITradeableBalance"/> interface is used when describing margin tradeable balance for a given market.

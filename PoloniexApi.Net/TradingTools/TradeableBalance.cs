@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using Jojatekok.PoloniexAPI.MarketTools;
 using Newtonsoft.Json;
 
-namespace Jojatekok.PoloniexAPI.MarketTools
+namespace Jojatekok.PoloniexAPI.TradingTools
 {
     public class TradeableBalance
         : ITradeableBalance
