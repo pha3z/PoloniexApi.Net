@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 
 namespace Jojatekok.PoloniexAPI
 {
@@ -9,6 +10,11 @@ namespace Jojatekok.PoloniexAPI
     {
         /// <summary>Gets a data summary of the markets available.</summary>
         Task<IDictionary<CurrencyPair, IMarketData>> GetSummaryAsync();
+
+        /// <summary>Fetches the best priced orders for all markets.</summary>        
+        /// <param name="depth">The number of orders to fetch from each side.</param>
+        /// <returns>A <see cref="IDictionary{TKey,TValue}"/> containing <see cref="IOrderBook"/> data hashed by <see cref="CurrencyPair"/>.</returns>
+        Task<IDictionary<CurrencyPair, IOrderBook>> GetAllOpenOrdersAsync(uint depth = 50);
 
         /// <summary>Fetches the best priced orders for a given market.</summary>
         /// <param name="currencyPair">The currency pair, which consists of the currency being traded on the market, and the base's code.</param>
