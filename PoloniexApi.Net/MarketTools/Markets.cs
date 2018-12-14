@@ -15,7 +15,7 @@ namespace Jojatekok.PoloniexAPI.MarketTools
             ApiWebClient = apiWebClient;
         }
 
-        private IDictionary<CurrencyPair, IMarketData> GetSummary()
+        public IDictionary<CurrencyPair, IMarketData> GetSummary()
         {
             var data = GetData<IDictionary<string, MarketData>>("returnTicker");
             return data.ToDictionary(
@@ -24,7 +24,7 @@ namespace Jojatekok.PoloniexAPI.MarketTools
             );
         }
 
-        private IOrderBook GetOpenOrders(CurrencyPair currencyPair, uint depth)
+        public IOrderBook GetOpenOrders(CurrencyPair currencyPair, uint depth)
         {
             var data = GetData<OrderBook>(
                 "returnOrderBook",
@@ -34,7 +34,7 @@ namespace Jojatekok.PoloniexAPI.MarketTools
             return data;
         }
 
-        private IDictionary<CurrencyPair, IOrderBook> GetAllOpenOrders(uint depth)
+        public IDictionary<CurrencyPair, IOrderBook> GetAllOpenOrders(uint depth)
         {
             var data = GetData<IDictionary<string, OrderBook>>(
                 "returnOrderBook",
@@ -47,7 +47,7 @@ namespace Jojatekok.PoloniexAPI.MarketTools
             );
         }
 
-        private IList<ITrade> GetTrades(CurrencyPair currencyPair)
+        public IList<ITrade> GetTrades(CurrencyPair currencyPair)
         {
             var data = GetData<IList<Trade>>(
                 "returnTradeHistory",
@@ -56,7 +56,7 @@ namespace Jojatekok.PoloniexAPI.MarketTools
             return new List<ITrade>(data);
         }
 
-        private IList<ITrade> GetTrades(CurrencyPair currencyPair, DateTime startTime, DateTime endTime)
+        public IList<ITrade> GetTrades(CurrencyPair currencyPair, DateTime startTime, DateTime endTime)
         {
             var data = GetData<IList<Trade>>(
                 "returnTradeHistory",
@@ -67,7 +67,7 @@ namespace Jojatekok.PoloniexAPI.MarketTools
             return new List<ITrade>(data);
         }
 
-        private IList<IMarketChartData> GetChartData(CurrencyPair currencyPair, MarketPeriod period, DateTime startTime, DateTime endTime)
+        public IList<IMarketChartData> GetChartData(CurrencyPair currencyPair, MarketPeriod period, DateTime startTime, DateTime endTime)
         {
             var data = GetData<IList<MarketChartData>>(
                 "returnChartData",
@@ -77,6 +77,12 @@ namespace Jojatekok.PoloniexAPI.MarketTools
                 "period=" + (int)period
             );
             return new List<IMarketChartData>(data);
+        }
+
+        /// <inheritdoc cref="IMarkets.GetChartDataAsync(CurrencyPair, MarketPeriod)"/>
+        public IList<IMarketChartData> GetChartData(CurrencyPair currencyPair, MarketPeriod period)
+        {
+            return GetChartData(currencyPair, period, Helper.DateTimeUnixEpochStart, DateTime.MaxValue);
         }
 
         /// <inheritdoc cref="IMarkets.GetSummaryAsync"/>
@@ -119,12 +125,6 @@ namespace Jojatekok.PoloniexAPI.MarketTools
         public Task<IList<IMarketChartData>> GetChartDataAsync(CurrencyPair currencyPair, MarketPeriod period)
         {
             return Task.Factory.StartNew(() => GetChartData(currencyPair, period, Helper.DateTimeUnixEpochStart, DateTime.MaxValue));
-        }
-
-        /// <inheritdoc cref="IMarkets.GetChartDataAsync(CurrencyPair)"/>
-        public Task<IList<IMarketChartData>> GetChartDataAsync(CurrencyPair currencyPair)
-        {
-            return Task.Factory.StartNew(() => GetChartData(currencyPair, MarketPeriod.Minutes30, Helper.DateTimeUnixEpochStart, DateTime.MaxValue));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
